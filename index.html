@@ -99,6 +99,7 @@
   <script>
     var daysOff = [0,6];
     var maxGap = 2;
+    var nextYears = 10;
     var holidays = [
       [0,3,25, 'liberazione'],
       [0,4,1, 'giorno dei lavoratori'],
@@ -223,13 +224,11 @@
       groups = [],
       gap = 0;
 
-    holidays = holidays
-      .concat(easter(startYear))
-      .concat(easter(startYear+1))
-      .concat(easter(startYear+2));
-    console.debug('startYear', startYear);
+    for (var i = 0; i < nextYears; i++) {
+      holidays = holidays.concat(easter(startYear + i));
+    }
 
-    while (cursor.getFullYear() <= startYear + 2) {
+    while (cursor.getFullYear() <= startYear + nextYears) {
       var t = isOff(cursor);
       if (t) {
         // day is off
@@ -266,8 +265,35 @@
 
     function render(groups) {
       document.getElementById('result').innerHTML = (
+        // recapYears(groups) +
         groups.map(tmpl.group).join('')
       );
+    }
+
+    function recapYears(groups) {
+      var years = getYears(groups);
+
+      return '<ul>' +
+        Object.keys(years).map(function(year) {
+          var yearGroup = years[year];
+          var goodGroups = yearGroup.filter(function(group) { return !group.sad; });
+          var totDays = goodGroups.reduce(function(tot, group) { return tot + group.days.length }, 0);
+
+          return '<li>' + year + ': ' + goodGroups.length + ' long weekends, ' + totDays + ' days' + '</li>';
+        }).join('') +
+      '</ul>';
+    }
+
+    function getYears(groups) {
+      var years = {};
+      groups.forEach(function(group) {
+        var year = group.firstDate.getFullYear();
+        if (!years[year]) {
+          years[year] = [];
+        }
+        years[year].push(group);
+      });
+      return years;
     }
 
     function easter(Y) {
