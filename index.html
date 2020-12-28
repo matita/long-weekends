@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,18 +96,37 @@
     <div id="result"></div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.9.8/dayjs.min.js" integrity="sha512-kZ+x2gdehn6OZMWZSp3Vt5R+v9hQTYEATQwaUfWquhxbvNVAy6IRtYs7asdyxKUTqG0I5ZqBqnzcBrpnHJCAGw==" crossorigin="anonymous"></script>
-  <script>!function(r,t,e){var n="second",a="minute",d="hour",o="day",s="month",u="year";r=r||{};var i=t.prototype,l={future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"};e.en.relativeTime=l;var h=(t,i,h,f)=>{var m=h.$locale().relativeTime||l,y=r.thresholds||[{l:"s",r:44,d:n},{l:"m",r:89},{l:"mm",r:44,d:a},{l:"h",r:89},{l:"hh",r:21,d:d},{l:"d",r:35},{l:"dd",r:25,d:o},{l:"M",r:45},{l:"MM",r:10,d:s},{l:"y",r:17},{l:"yy",d:u}],c=y.length;let v,p,M;for(let n=0;n<c;n+=1){let a=y[n];a.d&&(v=f?e(t).diff(h,a.d,!0):h.diff(t,a.d,!0));var g=(r.rounding||Math.round)(Math.abs(v));if(M=v>0,g<=a.r||!a.r){g<=1&&n>0&&(a=y[n-1]);var w=m[a.l];p="string"==typeof w?w.replace("%d",g):w(g,i,a.l,M);break}}if(i)return p;var b=M?m.future:m.past;return"function"==typeof b?b(p):b.replace("%s",p)};i.to=function(r,t){return h(r,t,this,!0)},i.from=function(r,t){return h(r,t,this)};var f=r=>r.$u?e.utc():e();i.toNow=function(r){return this.to(f(this),r)},i.fromNow=function(r){return this.from(f(this),r)}}(null,dayjs,dayjs);</script>
   <script>
+    var daysOff = [0,6];
+    var maxGap = 2;
+    var holidays = [
+      [0,3,25, 'liberazione'],
+      [0,4,1, 'giorno dei lavoratori'],
+      [0,5,2, 'festa della repubblica'],
+      // [0,6,29, 'San Pietro'],
+      [0,7,15, 'Ferragosto'],
+      [0,9,4, 'San Petronio'],
+      [0,10,1, 'Ognissanti'],
+      [0,11,8, 'Immacolata concezione'],
+      [0,11,25, 'Natale'],
+      [0,11,26, 'Santo Stefano'],
+      [0,0,1, 'Capodanno'],
+      [0,0,6, 'Epifania']
+    ];
+
     var tmpl = {
       group: function(group) {
-        var fromNow = dayjs(group.firstDate).fromNow();
+        var year = group.firstDate.getFullYear();
         var numDays = group.days.length;
         var numDaysOff = group.workDays;
 
         return (
           '<h2 class="from-now">' +
-            fromNow + ' (' + numDays + ' days with ' + numDaysOff + ' off)' +
+            year + ' ' + formatMonth(group.firstDate) +
+            ' &middot; ' +
+            numDays + ' days' +
+            (numDaysOff ? ' with ' + numDaysOff + ' off' : '') +
+            (group.sad ? ' 😞' : '') +
           '</h2>' +
           '<ul class="group">' +
             group.days.map(tmpl.day).join('') +
@@ -119,9 +137,9 @@
       day: function(day) {
         var date = day.date;
         var className = day.isOff ? 'special-day' : 'regular-day';
-        var month = dateFormat(date, 'MMM');
-        var dateNum = dateFormat(date, 'DD');
-        var dayName = dateFormat(date, 'dddd');
+        var month = formatMonth(date);
+        var dateNum = formatDate(date);
+        var dayName = formatWeekDay(date);
 
         return (
           '<li class="day ' + className + '">' +
@@ -138,25 +156,40 @@
       },
     };
 
-    function dateFormat(date, format) {
-      return dayjs(date).format(format).replace('Ã¬', '&igrave;');
+    var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    function formatMonth(date) {
+      return months[date.getMonth()];
     }
 
-    var daysOff = [0,6],
-      holidays = [
-        [0,3,25, 'liberazione'],
-        [0,4,1, 'giorno dei lavoratori'],
-        [0,5,2, 'festa della repubblica'],
-        // [0,6,29, 'San Pietro'],
-        [0,7,15, 'Ferragosto'],
-        [0,9,4, 'San Petronio'],
-        [0,10,1, 'Ognissanti'],
-        [0,11,8, 'Immacolata concezione'],
-        [0,11,25, 'Natale'],
-        [0,11,26, 'Santo Stefano'],
-        [0,0,1, 'Capodanno'],
-        [0,0,6, 'Epifania']
-      ];
+    function formatDate(date) {
+      return ('0' + date.getDate()).slice(-2);
+    }
+
+    var weekdays = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+    function formatWeekDay(date) {
+      return weekdays[date.getDay()];
+    }
 
     function isOff(date) {
       var year = date.getFullYear(),
@@ -188,15 +221,15 @@
       cons = [],
       workDays = [],
       groups = [],
-      maxGap = 2,
       gap = 0;
 
     holidays = holidays
       .concat(easter(startYear))
-      .concat(easter(startYear+1));
+      .concat(easter(startYear+1))
+      .concat(easter(startYear+2));
     console.debug('startYear', startYear);
 
-    while (cursor.getFullYear() <= startYear + 1) {
+    while (cursor.getFullYear() <= startYear + 2) {
       var t = isOff(cursor);
       if (t) {
         // day is off
@@ -212,8 +245,9 @@
           });
         } else {
           // gap too long
-          if (cons.length >= minConsCount) {
+          if (cons.length >= minConsCount || cons.some(function(d) { return d.special; })) {
             groups.push({
+              sad: cons.length < minConsCount,
               firstDate: cons[0].date,
               offDays: cons.filter(function(d) { return d.isOff; }).length,
               workDays: cons.filter(function(d) { return !d.isOff; }).length,
@@ -231,7 +265,9 @@
 
 
     function render(groups) {
-      document.getElementById('result').innerHTML = groups.map(tmpl.group).join('')
+      document.getElementById('result').innerHTML = (
+        groups.map(tmpl.group).join('')
+      );
     }
 
     function easter(Y) {
