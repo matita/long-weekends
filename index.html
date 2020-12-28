@@ -40,12 +40,8 @@
       margin: 0;
     }
 
-    .day {
+    .day + .day {
       border-top: 1px solid #eee;
-    }
-
-    .day:first-of-type {
-      border-top: none;
     }
 
     .date {
@@ -63,6 +59,7 @@
 
     .day-text {
       display: inline-block;
+      line-height: 1.6;
     }
 
     .day-text span {
@@ -71,6 +68,8 @@
 
     .from-now {
       color: #999;
+      margin-top: 2em;
+      padding-left: 1.6rem;
     }
 
     .day-weekday {
@@ -82,18 +81,13 @@
     }
 
     .regular-day .day-text:after {
-      content: 'ferie';
+      content: 'day off';
     }
 
     span.date-month {
       display: block;
       text-transform: lowercase;
       font-variant: small-caps;
-    }
-
-    h2.from-now {
-      margin-top: 2em;
-      padding-left: 1.6rem;
     }
   </style>
 </head>
@@ -145,16 +139,6 @@
     function dateFormat(date, format) {
       return dayjs(date).format(format).replace('Ã¬', '&igrave;');
     }
-
-    var days = {
-      0: 'domenica',
-      1: 'luned&igrave;',
-      2: 'marted&igrave;',
-      3: 'mercoled&igrave;',
-      4: 'gioved&igrave;',
-      5: 'venerd&igrave;',
-      6: 'sabato'
-    };
 
     var daysOff = [0,6],
       holidays = [
