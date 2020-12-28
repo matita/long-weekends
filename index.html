@@ -97,44 +97,46 @@
     <div id="result"></div>
   </div>
 
-
-  <script id="group-tmpl" type="text/html">
-    <h2 class="from-now">{{fromNow firstDate}} ({{days.length}} days with {{workDays}} off)</h2>
-    <ul class="group">
-      {{#each days}}
-        {{>day}}
-      {{/each}}
-    </ul>
-  </script>
-
-  <script id="day-tmpl" type="text/html">
-    <li class="day{{#if isOff}} special-day{{/if}}{{#unless isOff}} regular-day{{/unless}}">
-      <div class="date">
-        <span class="date-month">{{dateFormat date "MMM"}}</span>
-        <span class="date-day">{{dateFormat date "DD"}}</span>
-      </div>
-      <div class="day-text">
-        <span class="day-weekday">{{{dateFormat date "dddd"}}}</span>
-        <span class="day-special">{{special}}</span>
-      </div>
-    </li>
-  </script>
-
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.9.8/dayjs.min.js" integrity="sha512-kZ+x2gdehn6OZMWZSp3Vt5R+v9hQTYEATQwaUfWquhxbvNVAy6IRtYs7asdyxKUTqG0I5ZqBqnzcBrpnHJCAGw==" crossorigin="anonymous"></script>
   <script>!function(r,t,e){var n="second",a="minute",d="hour",o="day",s="month",u="year";r=r||{};var i=t.prototype,l={future:"in %s",past:"%s ago",s:"a few seconds",m:"a minute",mm:"%d minutes",h:"an hour",hh:"%d hours",d:"a day",dd:"%d days",M:"a month",MM:"%d months",y:"a year",yy:"%d years"};e.en.relativeTime=l;var h=(t,i,h,f)=>{var m=h.$locale().relativeTime||l,y=r.thresholds||[{l:"s",r:44,d:n},{l:"m",r:89},{l:"mm",r:44,d:a},{l:"h",r:89},{l:"hh",r:21,d:d},{l:"d",r:35},{l:"dd",r:25,d:o},{l:"M",r:45},{l:"MM",r:10,d:s},{l:"y",r:17},{l:"yy",d:u}],c=y.length;let v,p,M;for(let n=0;n<c;n+=1){let a=y[n];a.d&&(v=f?e(t).diff(h,a.d,!0):h.diff(t,a.d,!0));var g=(r.rounding||Math.round)(Math.abs(v));if(M=v>0,g<=a.r||!a.r){g<=1&&n>0&&(a=y[n-1]);var w=m[a.l];p="string"==typeof w?w.replace("%d",g):w(g,i,a.l,M);break}}if(i)return p;var b=M?m.future:m.past;return"function"==typeof b?b(p):b.replace("%s",p)};i.to=function(r,t){return h(r,t,this,!0)},i.from=function(r,t){return h(r,t,this)};var f=r=>r.$u?e.utc():e();i.toNow=function(r){return this.to(f(this),r)},i.fromNow=function(r){return this.from(f(this),r)}}(null,dayjs,dayjs);</script>
   <script>
-    var groupTmpl = Handlebars.compile(document.getElementById('group-tmpl').innerHTML);
-    Handlebars.registerPartial('day', document.getElementById('day-tmpl').innerHTML);
+    var tmpl = {
+      group: function(group) {
+        var fromNow = dayjs(group.firstDate).fromNow();
+        var numDays = group.days.length;
+        var numDaysOff = group.workDays;
 
-    Handlebars.registerHelper('dateFormat', function(context, format) {
-      return dateFormat(context, format);
-    });
+        return (
+          '<h2 class="from-now">' +
+            fromNow + ' (' + numDays + ' days with ' + numDaysOff + ' off)' +
+          '</h2>' +
+          '<ul class="group">' +
+            group.days.map(tmpl.day).join('') +
+          '</ul>'
+        );
+      },
 
-    Handlebars.registerHelper('fromNow', function(date) {
-      return dayjs(date).fromNow();
-    });
+      day: function(day) {
+        var date = day.date;
+        var className = day.isOff ? 'special-day' : 'regular-day';
+        var month = dateFormat(date, 'MMM');
+        var dateNum = dateFormat(date, 'DD');
+        var dayName = dateFormat(date, 'dddd');
+
+        return (
+          '<li class="day ' + className + '">' +
+            '<div class="date">' +
+              '<span class="date-month">' + month + '</span>' +
+              '<span class="date-day">' + dateNum + '</span>' +
+            '</div>' +
+            '<div class="day-text">' +
+              '<span class="day-weekday">' + dayName + '</span>' +
+              '<span class="day-special">' + (day.special || '') + '</span>' +
+            '</div>' +
+          '</li>'
+        );
+      },
+    };
 
     function dateFormat(date, format) {
       return dayjs(date).format(format).replace('Ã¬', '&igrave;');
@@ -229,7 +231,7 @@
 
 
     function render(groups) {
-      document.getElementById('result').innerHTML = groups.map(groupTmpl).join('')
+      document.getElementById('result').innerHTML = groups.map(tmpl.group).join('')
     }
 
     function easter(Y) {
