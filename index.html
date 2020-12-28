@@ -1,299 +1,299 @@
 
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Ponti</title>
-		<meta name="viewport" content="width=device-width">
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-		<style>
-			body {
-				background: #eee;
-				color: #333;
-				font-family: 'Open Sans', sans-serif;
-			}
+  <head>
+    <title>Ponti</title>
+    <meta name="viewport" content="width=device-width">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <style>
+      body {
+        background: #eee;
+        color: #333;
+        font-family: 'Open Sans', sans-serif;
+      }
 
-			h1 {
-				text-align: center;
-			}
+      h1 {
+        text-align: center;
+      }
 
-			@media (min-width: 600px) {
-				.main {
-					width: 600px;
-					margin: 0 auto;
-				}
-			}
+      @media (min-width: 600px) {
+        .main {
+          width: 600px;
+          margin: 0 auto;
+        }
+      }
 
-			.group {
-				background: #fff;
-				list-style-type: none;
-				padding: 0;
-				border-radius: 1em;
-				box-shadow: 0 3px 3px rgba(0,0,0,.2);
-				overflow: hidden;
-			}
+      .group {
+        background: #fff;
+        list-style-type: none;
+        padding: 0;
+        border-radius: 1em;
+        box-shadow: 0 3px 3px rgba(0,0,0,.2);
+        overflow: hidden;
+      }
 
-			.day {
-				display: block;
-				margin: 0;
-			}
+      .day {
+        display: block;
+        margin: 0;
+      }
 
-			.day {
-				border-top: 1px solid #eee;
-			}
+      .day {
+        border-top: 1px solid #eee;
+      }
 
-			.day:first-of-type {
-				border-top: none;
-			}
+      .day:first-of-type {
+        border-top: none;
+      }
 
-			.date {
-				text-align: center;
-				line-height: 1;
-				padding: 0.7rem 1.6rem;
-				display: inline-block;
-				color: #555;
-			}
+      .date {
+        text-align: center;
+        line-height: 1;
+        padding: 0.7rem 1.6rem;
+        display: inline-block;
+        color: #555;
+      }
 
-			.date-day {
-				font-size: 2em;
-				display: block;
-			}
+      .date-day {
+        font-size: 2em;
+        display: block;
+      }
 
-			.day-text {
-				display: inline-block;
-			}
+      .day-text {
+        display: inline-block;
+      }
 
-			.day-text span {
-				display: block;
-			}
+      .day-text span {
+        display: block;
+      }
 
-			.from-now {
-				color: #999;
-			}
+      .from-now {
+        color: #999;
+      }
 
-			.day-weekday {
-				color: #999;
-			}
+      .day-weekday {
+        color: #999;
+      }
 
-			.regular-day {
-				background-image: linear-gradient(to right, #7d7 0, #7d7 10px, transparent 10px);
-			}
+      .regular-day {
+        background-image: linear-gradient(to right, #7d7 0, #7d7 10px, transparent 10px);
+      }
 
-			.regular-day .day-text:after {
-				content: 'ferie';
-			}
+      .regular-day .day-text:after {
+        content: 'ferie';
+      }
 
-			* {
-				box-sizing: border-box;
-			}
+      * {
+        box-sizing: border-box;
+      }
 
-			span.date-month {
-				display: block;
-				font-variant: small-caps;
-			}
+      span.date-month {
+        display: block;
+        font-variant: small-caps;
+      }
 
-			h2.from-now {
-				font-weight: normal;
-				margin-top: 2em;
-				padding-left: 1.6rem;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="main">
-			<h1>Prossimi ponti</h1>
-			<div id="result"></div>
-		</div>
-
-
-		<script id="group-tmpl" type="text/html">
-			<h2 class="from-now">{{fromNow firstDate}} ({{days.length}} giorni con {{workDays}} ferie)</h2>
-			<ul class="group">
-				{{#each days}}
-					{{>day}}
-				{{/each}}
-			</ul>
-		</script>
-
-		<script id="day-tmpl" type="text/html">
-			<li class="day{{#if isOff}} special-day{{/if}}{{#unless isOff}} regular-day{{/unless}}">
-				<div class="date">
-					<span class="date-month">{{dateFormat date "MMM"}}</span>
-					<span class="date-day">{{dateFormat date "DD"}}</span>
-				</div>
-				<div class="day-text">
-					<span class="day-weekday">{{{dateFormat date "dddd"}}}</span>
-					<span class="day-special">{{special}}</span>
-				</div>
-			</li>
-		</script>
+      h2.from-now {
+        font-weight: normal;
+        margin-top: 2em;
+        padding-left: 1.6rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <h1>Prossimi ponti</h1>
+      <div id="result"></div>
+    </div>
 
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js"></script>
-		<script>
-			moment.locale('it');
+    <script id="group-tmpl" type="text/html">
+      <h2 class="from-now">{{fromNow firstDate}} ({{days.length}} giorni con {{workDays}} ferie)</h2>
+      <ul class="group">
+        {{#each days}}
+          {{>day}}
+        {{/each}}
+      </ul>
+    </script>
 
-			var groupTmpl = Handlebars.compile(document.getElementById('group-tmpl').innerHTML);
-			Handlebars.registerPartial('day', document.getElementById('day-tmpl').innerHTML);
-
-			Handlebars.registerHelper('dateFormat', function(context, format) {
-				return moment(context).format(format).replace('Ã¬', '&igrave;');
-			});
-
-			Handlebars.registerHelper('fromNow', function(date) {
-				return moment(date).fromNow();
-			});
-
-			var days = {
-				0: 'domenica',
-				1: 'luned&igrave;',
-				2: 'marted&igrave;',
-				3: 'mercoled&igrave;',
-				4: 'gioved&igrave;',
-				5: 'venerd&igrave;',
-				6: 'sabato'
-			};
-
-			var daysOff = [0,6],
-				holidays = [
-					[0,3,25, 'liberazione'],
-					[0,4,1, 'giorno dei lavoratori'],
-					[0,5,2, 'festa della repubblica'],
-					// [0,6,29, 'San Pietro'],
-					[0,7,15, 'Ferragosto'],
-					[0,9,4, 'San Petronio'],
-					[0,10,1, 'Ognissanti'],
-					[0,11,8, 'Immacolata concezione'],
-					[0,11,25, 'Natale'],
-					[0,11,26, 'Santo Stefano'],
-					[0,0,1, 'Capodanno'],
-					[0,0,6, 'Epifania']
-				];
-
-			function isOff(date) {
-				var year = date.getFullYear(),
-					text;
-
-				text = holidays.filter(function(d) {
-					return year == (d[0] || year) &&
-						date.getMonth() == d[1] &&
-						date.getDate() == d[2];
-				});
-
-				return text[0] &&
-					(text[0][3] && {
-						date: new Date(date.getTime()),
-						isOff: true,
-						special: text[0][3]
-					}) ||
-					(daysOff.indexOf(date.getDay()) != -1 && {
-						date: new Date(date.getTime()),
-						isOff: true
-					});
-			}
+    <script id="day-tmpl" type="text/html">
+      <li class="day{{#if isOff}} special-day{{/if}}{{#unless isOff}} regular-day{{/unless}}">
+        <div class="date">
+          <span class="date-month">{{dateFormat date "MMM"}}</span>
+          <span class="date-day">{{dateFormat date "DD"}}</span>
+        </div>
+        <div class="day-text">
+          <span class="day-weekday">{{{dateFormat date "dddd"}}}</span>
+          <span class="day-special">{{special}}</span>
+        </div>
+      </li>
+    </script>
 
 
-			var now = new Date(),
-				cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7),
-				startYear = cursor.getFullYear(),
-				minConsCount = 3,
-				cons = [],
-				workDays = [],
-				groups = [],
-				maxGap = 2,
-				gap = 0;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js"></script>
+    <script>
+      moment.locale('it');
 
-			holidays = holidays
-				.concat(easter(startYear))
-				.concat(easter(startYear+1));
-			console.debug('startYear', startYear);
+      var groupTmpl = Handlebars.compile(document.getElementById('group-tmpl').innerHTML);
+      Handlebars.registerPartial('day', document.getElementById('day-tmpl').innerHTML);
 
-			while (cursor.getFullYear() <= startYear + 1) {
-				var t = isOff(cursor);
-				if (t) {
-					// day is off
-					cons = cons.concat(workDays);
-					workDays = [];
-					cons.push(t);
-					gap = maxGap;
-				} else {
-					if (gap-- > 0) {
-						// work day after off day
-						workDays.push({
-							date: new Date(cursor.getTime())
-						});
-					} else {
-						// gap too long
-						if (cons.length >= minConsCount) {
-							groups.push({
-								firstDate: cons[0].date,
-								offDays: cons.filter(function(d) { return d.isOff; }).length,
-								workDays: cons.filter(function(d) { return !d.isOff; }).length,
-								days: cons
-							});
-						}
-						workDays = [];
-						cons = [];
-					}
-				}
-				cursor.setDate(cursor.getDate() + 1);
-			}
+      Handlebars.registerHelper('dateFormat', function(context, format) {
+        return moment(context).format(format).replace('Ã¬', '&igrave;');
+      });
 
-			render(groups);
+      Handlebars.registerHelper('fromNow', function(date) {
+        return moment(date).fromNow();
+      });
+
+      var days = {
+        0: 'domenica',
+        1: 'luned&igrave;',
+        2: 'marted&igrave;',
+        3: 'mercoled&igrave;',
+        4: 'gioved&igrave;',
+        5: 'venerd&igrave;',
+        6: 'sabato'
+      };
+
+      var daysOff = [0,6],
+        holidays = [
+          [0,3,25, 'liberazione'],
+          [0,4,1, 'giorno dei lavoratori'],
+          [0,5,2, 'festa della repubblica'],
+          // [0,6,29, 'San Pietro'],
+          [0,7,15, 'Ferragosto'],
+          [0,9,4, 'San Petronio'],
+          [0,10,1, 'Ognissanti'],
+          [0,11,8, 'Immacolata concezione'],
+          [0,11,25, 'Natale'],
+          [0,11,26, 'Santo Stefano'],
+          [0,0,1, 'Capodanno'],
+          [0,0,6, 'Epifania']
+        ];
+
+      function isOff(date) {
+        var year = date.getFullYear(),
+          text;
+
+        text = holidays.filter(function(d) {
+          return year == (d[0] || year) &&
+            date.getMonth() == d[1] &&
+            date.getDate() == d[2];
+        });
+
+        return text[0] &&
+          (text[0][3] && {
+            date: new Date(date.getTime()),
+            isOff: true,
+            special: text[0][3]
+          }) ||
+          (daysOff.indexOf(date.getDay()) != -1 && {
+            date: new Date(date.getTime()),
+            isOff: true
+          });
+      }
 
 
-			function render(groups) {
-				document.getElementById('result').innerHTML = groups.map(groupTmpl).join('')
-			}
+      var now = new Date(),
+        cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7),
+        startYear = cursor.getFullYear(),
+        minConsCount = 3,
+        cons = [],
+        workDays = [],
+        groups = [],
+        maxGap = 2,
+        gap = 0;
 
-			function easter(Y) {
-				var a, b, c, d, e, M, N, giorno, mese;
+      holidays = holidays
+        .concat(easter(startYear))
+        .concat(easter(startYear+1));
+      console.debug('startYear', startYear);
 
-				if (Y < 2099) {
-					M = 24;
-					N = 5;
-				} else if (Y < 2199) {
-					M = 24;
-					N = 6;
-				} else if (Y < 2299) {
-					M = 25;
-					N = 0;
-				} else if (Y < 2399) {
-					M = 26;
-					N = 1;
-				} else if(Y < 2499) {
-					M = 25;
-					N = 1;
-				}
+      while (cursor.getFullYear() <= startYear + 1) {
+        var t = isOff(cursor);
+        if (t) {
+          // day is off
+          cons = cons.concat(workDays);
+          workDays = [];
+          cons.push(t);
+          gap = maxGap;
+        } else {
+          if (gap-- > 0) {
+            // work day after off day
+            workDays.push({
+              date: new Date(cursor.getTime())
+            });
+          } else {
+            // gap too long
+            if (cons.length >= minConsCount) {
+              groups.push({
+                firstDate: cons[0].date,
+                offDays: cons.filter(function(d) { return d.isOff; }).length,
+                workDays: cons.filter(function(d) { return !d.isOff; }).length,
+                days: cons
+              });
+            }
+            workDays = [];
+            cons = [];
+          }
+        }
+        cursor.setDate(cursor.getDate() + 1);
+      }
 
-				a = Y % 19;
-				b = Y % 4;
-				c = Y % 7;
-				d = ((19*a) + M) % 30
-				e = ((2*b) + (4*c) + (6*d) + N) % 7;
+      render(groups);
 
-				if (d + e < 10) {
-					giorno = d+e+22;
-					mese = 3;
-				} else {
-					giorno = d+e-9;
-					mese = 4;
-				}
 
-				if (giorno==26 && mese==4) {
-					giorno = 19;
-					mese = 4;
-				}
+      function render(groups) {
+        document.getElementById('result').innerHTML = groups.map(groupTmpl).join('')
+      }
 
-				if (giorno==25 && mese==4 && d==28 && e==6 && a>10) {
-					giorno=18;
-					mese=4;
-				}
-				return [
-					[Y, mese-1, giorno, 'Pasqua'],
-					[Y, mese-1, giorno+1, 'Pasquetta']
-				];
-			}
-		</script>
-	</body>
+      function easter(Y) {
+        var a, b, c, d, e, M, N, giorno, mese;
+
+        if (Y < 2099) {
+          M = 24;
+          N = 5;
+        } else if (Y < 2199) {
+          M = 24;
+          N = 6;
+        } else if (Y < 2299) {
+          M = 25;
+          N = 0;
+        } else if (Y < 2399) {
+          M = 26;
+          N = 1;
+        } else if(Y < 2499) {
+          M = 25;
+          N = 1;
+        }
+
+        a = Y % 19;
+        b = Y % 4;
+        c = Y % 7;
+        d = ((19*a) + M) % 30
+        e = ((2*b) + (4*c) + (6*d) + N) % 7;
+
+        if (d + e < 10) {
+          giorno = d+e+22;
+          mese = 3;
+        } else {
+          giorno = d+e-9;
+          mese = 4;
+        }
+
+        if (giorno==26 && mese==4) {
+          giorno = 19;
+          mese = 4;
+        }
+
+        if (giorno==25 && mese==4 && d==28 && e==6 && a>10) {
+          giorno=18;
+          mese=4;
+        }
+        return [
+          [Y, mese-1, giorno, 'Pasqua'],
+          [Y, mese-1, giorno+1, 'Pasquetta']
+        ];
+      }
+    </script>
+  </body>
 </html>
